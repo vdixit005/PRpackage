@@ -21,6 +21,18 @@ A list with the following elements,
 \description{
 Estimates a monotone density via the PR algorithm
 }
+\examples{
+# To estimate a monotone density using PR
+# Generate data
+n = 200
+X = abs(rnorm(n))
+# Estimate
+m = monotone(X)
+# Plot with the truth
+truth = 2*dnorm(m$Xsup)
+plot(m$Xsup, truth, type = "l")
+lines(m$Xsup, m$m, col = "red")
+}
 \references{
 Dixit, Vaidehi, and Ryan Martin. "Revisiting consistency of a
 recursive estimator of mixing distributions."

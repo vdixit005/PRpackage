@@ -19,7 +19,8 @@ pr(X, d, U, f0, w, nperm = 1, perm = NULL, ...)
 \item Equispaced and odd length vector as the support for univariate f
 \item Matrix of two columns, where each column is the support for the corresponding variate for bivariate f
 \item A matrix where each row is a random sample from f0
-}}
+}
+See 'Details'}
 
 \item{f0}{A vector of initial guess for f}
 
@@ -46,6 +47,11 @@ Executes the PR algorithm
 
 The PR algorithm is used to estimate mixing density \eqn{f} given data \eqn{X_1, \ldots, X_n} from mixture density \eqn{m} with a known kernel \eqn{k}, where
 \deqn{m(x) = \int k(x \mid u) f(u) du}
+
+This is a sequential algorithm which starts with a user-defined guess \eqn{f0} and returns the estimate \eqn{fn} in \eqn{n} steps.
+If \eqn{f(u)} is univariate then this integration is approximated by numerical integration; where the user specifies an equispaced and odd length vector \eqn{U} as the support.
+If \eqn{f(u)} is bivariate i.e. \eqn{u = (u_1, u_2)} then this integration is approximated with a quadrature rule. For this a two-dimensional grid is created by taking the first column of \eqn{U} as support for \eqn{u_1} and second column of \eqn{U} as support for \eqn{u_2}.
+Lastly, if \eqn{f(u)} is multivariate i.e. \eqn{u = (u_1,...,u_d)}, then the integration is approximated as a weighted sum over random observations \eqn{U}. In this case, each row of \eqn{U} is a vector of length \eqn{d} and is a random observation from \eqn{f0}.
 }
 
 \examples{
@@ -59,7 +65,7 @@ x = rnorm(n = 1000, mean = u, sd = 0.1)
 
 # PR estimate
 ans1 = pr(X = x, d = dnorm, U = U, f0 = f0, sd = 0.1)
-plot(U, ans1$f, type="l")
+plot(ans1)
 lines(U, dbeta(U, 2,10), col = "red")
 
 # Mixture density estimate
@@ -69,7 +75,7 @@ m1 = mixture_density(f = ans1$f, U = U, d = dnorm, Xsup = Xsup, sd = 0.1)
 ############################################################################################################
 
 # Bivariate implementation
-U = cbind(seq(0, 1, length.out = 101), seq(10^-5, 1, length.out = 101)) 
+U = cbind(seq(0, 1, length.out = 101), seq(10^-5, 1, length.out = 101))
 f0 = rep(1, 101*101)
 d2 = function(x,u){
  return(dnorm(x, mean = u[,1], sd = u[,2]))
@@ -81,6 +87,7 @@ x = rnorm(n = 2000, mean = u[,1], sd = u[,2])
 
 # PR estimate
 ans2 = pr(X = x, d = d2, U = U, f0 = f0)
+plot(ans2)
 
 # Mixture density estimate
 Xsup = as.matrix(seq(-1.5, 2.8, length.out = 101))

@@ -1,22 +1,21 @@
 #' Predictive recursion (PR) algorithm
-#' 
+#'
 #' Executes the PR algorithm
-#' 
 #' @param X Vector or matrix of data
 #' @param d Parametric kernel function of form d(x,u)
 #' @param U Mixing density support, where U is a
 #' \itemize{
-#' \item Equispaced and odd length vector as the support for univariate f 
+#' \item Equispaced and odd length vector as the support for univariate f
 #' \item Matrix of two columns, where each column is the support for the corresponding variate for bivariate f
 #' \item A matrix where each row is a random sample from f0
-#' }          
-#'         
+#' }
+#'See 'Details'
 #' @param f0 A vector of initial guess for f
 #' @param w A weight function defining the weight sequence
 #' @param nperm Number of permutations to be used
 #' @param perm A matrix of user-defined permutation sequence containing \code{nperm} rows and number of columns equal to number of data points in X
 #' @param ... Additional arguments to d
-#' 
+#'
 #' @return A list with the following elements,
 #' \itemize{
 #'   \item f - Permutation-averaged mixing density estimate
@@ -26,8 +25,12 @@
 #' @section Details:
 #' The PR algorithm is used to estimate mixing density \eqn{f} given data \eqn{X_1, \ldots, X_n} from mixture density \eqn{m} with a known kernel \eqn{k}, where
 #' \deqn{m(x) = \int k(x \mid u) f(u) du}
-#' 
-#' @examples 
+#'
+#' This is a sequential algorithm which starts with a user-defined guess \eqn{f0} and returns the estimate \eqn{fn} in \eqn{n} steps.
+#' If \eqn{f(u)} is univariate then this integration is approximated by numerical integration; where the user specifies an equispaced and odd length vector \eqn{U} as the support.
+#' If \eqn{f(u)} is bivariate i.e. \eqn{u = (u_1, u_2)} then this integration is approximated with a quadrature rule. For this a two-dimensional grid is created by taking the first column of \eqn{U} as support for \eqn{u_1} and second column of \eqn{U} as support for \eqn{u_2}.
+#' Lastly, if \eqn{f(u)} is multivariate i.e. \eqn{u = (u_1,...,u_d)}, then the integration is approximated as a weighted sum over random observations \eqn{U}. In this case, each row of \eqn{U} is a vector of length \eqn{d} and is a random observation from \eqn{f0}.
+#' @examples
 #' # Univariate implementation
 #'U = seq(0, 1, length.out = 101)
 #'f0 = dunif(U, min = 0, max = 1)
@@ -39,7 +42,7 @@
 #'
 #'# PR estimate
 #'ans1 = pr(X = x, d = dnorm, U = U, f0 = f0, sd = 0.1)
-#'plot(U, ans1$f, type="l")
+#'plot(ans1)
 #'lines(U, dbeta(U, 2,10), col = "red")
 #'
 #'# Mixture density estimate
@@ -49,32 +52,31 @@
 #'############################################################################################################
 #'
 #'# Bivariate implementation
-#'U = cbind(seq(0, 1, length.out = 101), seq(10^-5, 1, length.out = 101)) 
+#'U = cbind(seq(0, 1, length.out = 101), seq(10^-5, 1, length.out = 101))
 #'f0 = rep(1, 101*101)
 #'d2 = function(x,u){
 #'  return(dnorm(x, mean = u[,1], sd = u[,2]))
 #'}
 #'
 #'# Generate data from a bivariate mixture density
-# True density = \int N(x | u, sd = 0.1) Beta(u1 |2, 10) Beta(u2 | 10, 2)
+# True density = \int N(x | u, sd = 0.1) Beta(u1 |2, 10) Beta(u2 | 4, 4)
 #'u = cbind(rbeta(n = 2000, 2, 10), rbeta(n = 2000, 4, 4))
 #'x = rnorm(n = 2000, mean = u[,1], sd = u[,2])
 #'
 #'# PR estimate
 #'ans2 = pr(X = x, d = d2, U = U, f0 = f0)
-#library(ContourFunctions)
-#gcf_grid(U[,1], U[,2], matrix(ans2$f, 101, 101, byrow = TRUE))
+#'plot(ans2)
 #'
 # TRUTH
 #U.l = as.matrix(expand.grid(U[,1],U[,2]))
-#f.truth = dbeta(U.l[, 1], 2, 10) * dbeta(U.l[, 2], 4, 4) 
+#f.truth = dbeta(U.l[, 1], 2, 10) * dbeta(U.l[, 2], 4, 4)
 #gcf_grid(U[,2], U[,1], matrix(f.truth, 101, 101, byrow = TRUE))
 #'# Mixture density estimate
 #'Xsup = as.matrix(seq(-1.5, 2.8, length.out = 101))
 #'m2 = mixture_density(f = ans2$f, U = U, d = d2, Xsup = Xsup)
 #'plot(Xsup, m2$m, type="l")
 #m.truth = mixture_density(f.truth, U, d = d2, Xsup)
-#lines(Xsup, m1$m, col = "red") 
+#lines(Xsup, m1$m, col = "red")
 #'
 #'##########################################################################################
 #'
@@ -100,13 +102,13 @@
 #'lines(Xsup, m3$m, col = "blue")
 #'
 #'@source A first version of the code is available at \url{https://www4.stat.ncsu.edu/~rmartin/Codes/pr.R}
-#'@references 
-#'Dixit, Vaidehi, and Ryan Martin. "Estimating a mixing 
-#'distribution on the sphere using predictive recursion." 
+#'@references
+#'Dixit, Vaidehi, and Ryan Martin. "Estimating a mixing
+#'distribution on the sphere using predictive recursion."
 #'Sankhya B (2022): 1-31.
 #'
 #'Dixit, Vaidehi, and Ryan Martin. "A PRticle filter algorithm for
-#' nonparametric estimation of multivariate mixing distributions." 
+#' nonparametric estimation of multivariate mixing distributions."
 #' arXiv preprint arXiv:2204.01646 (2022).
 
 #############################################################################################################################
@@ -127,7 +129,7 @@ pr <- function(X, d, U, f0, w, nperm = 1, perm = NULL,...) {
     perm <- matrix(0, n, N)
     perm[,1] <- 1:n
     for(j in 2:N) perm[,j] <- sample(n)
-    
+
   }
   f.avg = 0 * f0
   L.avg = 0
@@ -139,14 +141,16 @@ pr <- function(X, d, U, f0, w, nperm = 1, perm = NULL,...) {
       x <- X[perm[,j],]
       for(i in 1:n) {
         num <- d(x[i], U,...) * f
-        den <- int(num, U) 
+        den <- int(num, U)
         L <- L + log(den)
         f <- (1 - w(i)) * f + w(i) * num / den
       }
       f.avg <- (j - 1) * f.avg / j + f / j
       L.avg <- (j - 1) * L.avg / j + L / j
     }
-    return(list(f=f.avg, L=-L.avg))
+    ans = list(U = U, f=f.avg, L=-L.avg)
+    class(ans) = "pr"
+    return(ans)
   }
   else if(du==2){
     f0 = f0 / simp.int2(U[,2], U[,1], matrix(f0, t, t, byrow=TRUE))
@@ -156,7 +160,7 @@ pr <- function(X, d, U, f0, w, nperm = 1, perm = NULL,...) {
       L = 0
       x <- as.matrix(X[perm[,j], ])
       for(i in 1:n){
-        num = d(x[i,], U.l,...) * f   
+        num = d(x[i,], U.l,...) * f
         f_matrix = matrix(num, nrow = t, ncol = t, byrow=TRUE)
         den = simp.int2(U[,2], U[,1], f_matrix)
         L <- L + log(den)
@@ -165,7 +169,9 @@ pr <- function(X, d, U, f0, w, nperm = 1, perm = NULL,...) {
       f.avg <- (j - 1) * f.avg / j + f / j
       L.avg <- (j - 1) * L.avg / j + L / j
     }
-    return(list(f=f.avg, L=-L.avg))
+    ans = list(U = U, f=f.avg, L=-L.avg)
+    class(ans) = "pr"
+    return(ans)
   }
   else {
     D.avg = 0 * f0
@@ -176,17 +182,34 @@ pr <- function(X, d, U, f0, w, nperm = 1, perm = NULL,...) {
       D = 1
       for(i in 1:n) {
         num <- d(x[i,], U,...) * f
-        den <- (1/t)*sum(d(x[i,], U,...)*D) 
+        den <- (1/t)*sum(d(x[i,], U,...)*D)
         L <- L + log(den)
         f <- (1 - w(i)) * f + w(i) * num / den
         D = D*(1 + w(i)*(d(x[i,], U,...)/den - 1))
-        
+
       }
       # Add D.avg
       f.avg <- (j - 1) * f.avg / j + f / j
       L.avg <- (j - 1) * L.avg / j + L / j
       D.avg <- (j - 1) * D.avg / j + D / j
     }
-    return(list(f=f.avg, L=-L.avg, D = D.avg))
-  }  
+    ans = list(U = U, f=f.avg, L=-L.avg, D = D.avg)
+    class(ans) = "pr"
+    return(ans)
+  }
+}
+
+plot.pr = function(obj){
+  U = as.matrix(obj$U)
+  du = ncol(U)
+  if(du==1){
+  plot(U, obj$f, xlab = "U", ylab = "f", type = "l", main = "Estimated Mixing density")
+  }
+  else if(du==2) {
+  f.matrix = matrix(obj$f, nrow(U), nrow(U), byrow = TRUE)
+  ContourFunctions::gcf_grid(U[,2], U[,1], f.matrix, mainminmax = FALSE, color.palette = function(x) rev(gray((1:x)/x)), bar = TRUE)
+  }
+  else {
+    print("Plot yet to be decided")
+  }
 }

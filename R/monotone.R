@@ -10,10 +10,22 @@
 #'   \item m - Estimated monotone density
 #'   \item Xsup - Corresponding support
 #' }
-#' 
-#' @references 
-#' Dixit, Vaidehi, and Ryan Martin. "Revisiting consistency of a 
-#' recursive estimator of mixing distributions." 
+#'
+#'@examples
+#'# To estimate a monotone density using PR
+#'# Generate data
+#'n = 200
+#'X = abs(rnorm(n))
+#'# Estimate
+#'m = monotone(X)
+#'# Plot with the truth
+#'truth = 2*dnorm(m$Xsup)
+#'plot(m$Xsup, truth, type = "l")
+#'lines(m$Xsup, m$m, col = "red")
+
+#' @references
+#' Dixit, Vaidehi, and Ryan Martin. "Revisiting consistency of a
+#' recursive estimator of mixing distributions."
 #' arXiv preprint arXiv:2110.02465 (2021).
 #'@export
 monotone = function(X, nperm = 25){
@@ -26,7 +38,7 @@ m = mixture_density(f = f$f, U = U, d = d.mon, Xsup = Xsup)
 return(list(Xsup = Xsup, m = m))
 }
 #'
-d.mon = function(x,u){ 
+d.mon = function(x,u){
   dunif(x, min = 0, max = u)
 }
 
