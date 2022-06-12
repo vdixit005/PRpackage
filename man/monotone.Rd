@@ -31,7 +31,7 @@ m = monotone(X)
 # Plot with the truth
 truth = 2*dnorm(m$Xsup)
 plot(m)
-lines(m$Xsup, m$m, col = "red")
+lines(m$Xsup, truth, col = "red")
 }
 \references{
 Dixit, Vaidehi, and Ryan Martin. "Revisiting consistency of a
