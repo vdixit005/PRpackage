@@ -48,7 +48,7 @@
 #'# Mixture density estimate
 #'Xsup = seq(-0.3, 1.3, length.out = 101)
 #'m1 = mixture_density(f = ans1$f, U = U, d = dnorm, Xsup = Xsup, sd = 0.1)
-#'
+#'plot(m1)
 #'############################################################################################################
 #'
 #'# Bivariate implementation
