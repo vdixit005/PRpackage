@@ -21,6 +21,7 @@
 #'@export
 mixture_density <- function(f, U, d, Xsup,...){
   U = as.matrix(U)
+  Xsup = as.matrix(Xsup)
   t <- nrow(U)
   du <- ncol(U)
   if(du==1){
