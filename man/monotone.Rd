@@ -30,7 +30,7 @@ X = abs(rnorm(n))
 m = monotone(X)
 # Plot with the truth
 truth = 2*dnorm(m$Xsup)
-plot(m$Xsup, truth, type = "l")
+plot(m)
 lines(m$Xsup, m$m, col = "red")
 }
 \references{
