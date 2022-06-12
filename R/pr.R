@@ -74,7 +74,7 @@
 #'# Mixture density estimate
 #'Xsup = as.matrix(seq(-1.5, 2.8, length.out = 101))
 #'m2 = mixture_density(f = ans2$f, U = U, d = d2, Xsup = Xsup)
-#'plot(Xsup, m2$m, type="l")
+#'plot(m2)
 #m.truth = mixture_density(f.truth, U, d = d2, Xsup)
 #lines(Xsup, m1$m, col = "red")
 #'
@@ -96,10 +96,11 @@
 #'
 #'# PR estimate
 #'ans3 = pr(X = x, d = d3, U = U)
+#'plot(ans3)
 #'
 #'# Mixture density estimate
 #'m3 = mixture_density(f = ans3$D, U = U, d = d3, Xsup = Xsup)
-#'lines(Xsup, m3$m, col = "blue")
+#'plot(m3)
 #'
 #'@source A first version of the code is available at \url{https://www4.stat.ncsu.edu/~rmartin/Codes/pr.R}
 #'@references
@@ -199,11 +200,13 @@ pr <- function(X, d, U, f0, w, nperm = 1, perm = NULL,...) {
   }
 }
 
+#'Plots the PR density function
+#'@export
 plot.pr = function(obj){
   U = as.matrix(obj$U)
   du = ncol(U)
   if(du==1){
-  plot(U, obj$f, xlab = "U", ylab = "f", type = "l", main = "Estimated Mixing density")
+  plot(U, obj$f, xlab = "U", ylab = "f", type = "l", main = "Estimated mixing density")
   }
   else if(du==2) {
   f.matrix = matrix(obj$f, nrow(U), nrow(U), byrow = TRUE)

@@ -92,7 +92,7 @@ plot(ans2)
 # Mixture density estimate
 Xsup = as.matrix(seq(-1.5, 2.8, length.out = 101))
 m2 = mixture_density(f = ans2$f, U = U, d = d2, Xsup = Xsup)
-plot(Xsup, m2$m, type="l")
+plot(m2)
 
 ##########################################################################################
 
@@ -112,10 +112,11 @@ U = cbind(runif(t, min = 0, max = 1), runif(t, min = 0, max = 1), runif(t, min =
 
 # PR estimate
 ans3 = pr(X = x, d = d3, U = U)
+plot(ans3)
 
 # Mixture density estimate
 m3 = mixture_density(f = ans3$D, U = U, d = d3, Xsup = Xsup)
-lines(Xsup, m3$m, col = "blue")
+plot(m3)
 
 }
 \references{

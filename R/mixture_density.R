@@ -31,6 +31,8 @@ mixture_density <- function(f, U, d, Xsup,...){
   } else {
     mix = apply(Xsup, 1, single.mix.multi, U = U, D = f, t = t, d = d,...)
   }
+  mix = list(Xsup = Xsup, mix = mix)
+  class(mix) = "mixture"
   return(mix)
 }
 
@@ -81,4 +83,21 @@ single.mix2 = function(x, f, U, d, t,...){
 #'@export
 single.mix.multi = function(x, D, U, d, t,...){
   return((1/t)*sum(d(x, U,...)*D))
+}
+
+#'Plots the PR mixture density function
+#'@export
+plot.mixture = function(obj){
+Xsup = obj$Xsup
+dx = ncol(Xsup)
+if(dx==1){
+  plot(Xsup, obj$mix, xlab = "X", ylab = "m", type = "l", main = "Estimated mixture density")
+  }
+else if(dx==2) {
+  m.matrix = matrix(obj$mix, nrow(Xsup), nrow(Xsup), byrow = TRUE)
+  ContourFunctions::gcf_grid(Xsup[,2], Xsup[,1], m.matrix, mainminmax = FALSE, color.palette = function(x) rev(gray((1:x)/x)), bar = TRUE)
+}
+else {
+  print("Plot yet to be decided")
+}
 }
