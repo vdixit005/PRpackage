@@ -70,7 +70,7 @@
 # TRUTH
 #U.l = as.matrix(expand.grid(U[,1],U[,2]))
 #f.truth = dbeta(U.l[, 1], 2, 10) * dbeta(U.l[, 2], 4, 4)
-#gcf_grid(U[,2], U[,1], matrix(f.truth, 101, 101, byrow = TRUE))
+#ContourFunctions::gcf_grid(U[,2], U[,1], matrix(f.truth, 101, 101, byrow = TRUE))
 #'# Mixture density estimate
 #'Xsup = as.matrix(seq(-1.5, 2.8, length.out = 101))
 #'m2 = mixture_density(f = ans2$f, U = U, d = d2, Xsup = Xsup)
@@ -210,7 +210,7 @@ plot.pr = function(obj){
   }
   else if(du==2) {
   f.matrix = matrix(obj$f, nrow(U), nrow(U), byrow = TRUE)
-  gcf_grid(U[,2], U[,1], f.matrix, mainminmax = FALSE, color.palette = function(x) rev(gray((1:x)/x)), bar = TRUE)
+  ContourFunctions::gcf_grid(U[,2], U[,1], f.matrix, mainminmax = FALSE, color.palette = function(x) rev(gray((1:x)/x)), bar = TRUE)
   }
   else {
     print("Plot yet to be decided")
