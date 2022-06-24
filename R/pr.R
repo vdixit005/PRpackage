@@ -210,7 +210,7 @@ plot.pr = function(obj){
   }
   else if(du==2) {
   f.matrix = matrix(obj$f, nrow(U), nrow(U), byrow = TRUE)
-  ContourFunctions::gcf_grid(U[,2], U[,1], f.matrix, mainminmax = FALSE, color.palette = function(x) rev(gray((1:x)/x)), bar = TRUE)
+  gcf_grid(U[,2], U[,1], f.matrix, mainminmax = FALSE, color.palette = function(x) rev(gray((1:x)/x)), bar = TRUE)
   }
   else {
     print("Plot yet to be decided")
