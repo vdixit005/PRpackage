@@ -5,7 +5,7 @@
 #' @param tol Error tolerance
 #'
 #' @return Scalar value of numerical integration of function f over x
-#' @export
+#'@export
 int <- function(f, x, tol=1e-10) {
 
   n <- length(x)
@@ -25,7 +25,7 @@ int <- function(f, x, tol=1e-10) {
 #' @param tol Error tolerance
 #'
 #' @return Scalar value of numerical integration of function f over x
-#' @export
+#'@export
 simp.int2 <- function(x, y, Fxy, tol=1e-10) {
 
   n <- length(x); if(n %% 2 == 0) stop("need an odd number of grid points")

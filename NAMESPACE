@@ -2,11 +2,13 @@
 
 S3method(plot,mixture)
 S3method(plot,pr)
+export(int)
 export(mixture_density)
 export(monotone)
 export(pr)
 export(pr.reg)
 export(prem.reg)
+export(simp.int2)
 export(single.mix.multi)
 export(single.mix1)
 export(single.mix2)
