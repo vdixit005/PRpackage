@@ -216,3 +216,27 @@ plot.pr = function(obj){
     print("Plot yet to be decided")
   }
 }
+
+# Adding a C++ function to replace the multivariate sum in pr.R
+# cppFunction('
+#   double pr_cpp(double x, double y) {
+#     vector<double> f.avg = 0 * f0
+#     double L.avg = 0
+#     vector<double> D.avg = 0 * f0
+#     for(j){
+#     vector<double> f = f0;
+#     double L = 0;
+#     double x[][] = X[perm[,j],];
+#     D = 1;
+#     for(i){
+#         vector<double> num = d()*f;
+#         vector<double> den = (1/t)*sum(d()*D);
+#         L = L + log(den);
+#         f = (1 - w(i))*f + w(i)*num / den;
+#         D = D*(1 + w(i)*(d(x[i,], U,...)/den - 1))
+#     }
+#     f.avg = (j-1)*f.avg/j + f/j;
+#     L.avg = (j-1)*L.avg/j + L/j;
+#     D.avg = (j-1)*D.avg/j + D/j;
+#     }
+#   }')

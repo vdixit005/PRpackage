@@ -7,7 +7,7 @@ Authors@R:
 Description: Given univariate, bivariate or multivariate (less than 10 variables) data from a mixture density, 
              estimate the underlying mixing density over a user-defined grid.
              Also obtain a mixture density estimate.
-Imports: ggplot2, ContourFunctions
+Imports: ggplot2, ContourFunctions, Rcpp
 License: `use_mit_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
