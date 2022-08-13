@@ -2,10 +2,10 @@
 % Please edit documentation in R/pr.R
 \name{plot.pr}
 \alias{plot.pr}
-\title{Plots the PR density function}
+\title{#Plots the PR density function}
 \usage{
 \method{plot}{pr}(obj)
 }
 \description{
-Plots the PR density function
+#Plots the PR density function
 }

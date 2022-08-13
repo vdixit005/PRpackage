@@ -73,7 +73,6 @@ Xsup = seq(-0.3, 1.3, length.out = 101)
 m1 = mixture_density(f = ans1$f, U = U, d = dnorm, Xsup = Xsup, sd = 0.1)
 plot(m1)
 ############################################################################################################
-
 # Bivariate implementation
 U = cbind(seq(0, 1, length.out = 101), seq(10^-5, 1, length.out = 101))
 f0 = rep(1, 101*101)
@@ -98,12 +97,9 @@ plot(m2)
 
 # Multivariate implementation
 require(sn)
-d3 = function(x,u,...){
- ans = numeric(length(u[,1]))
- for(i in 1:length(u[,1])){
-   ans[i] = dsn(x, xi = u[i,1], omega = u[i,2], alpha = u[i,3])
- }
- return(ans)
+d3 = function(x,u){
+ans = dsn(x, xi = u[1], omega = u[2], alpha = u[3])
+return(ans)
 }
 
 # Generate particles from initial guess f0
@@ -115,6 +111,7 @@ ans3 = pr(X = x, d = d3, U = U)
 plot(ans3)
 
 # Mixture density estimate
+Xsup = as.matrix(seq(-1.5, 2.8, length.out = 101))
 m3 = mixture_density(f = ans3$D, U = U, d = d3, Xsup = Xsup)
 plot(m3)
 
@@ -127,4 +124,5 @@ Sankhya B (2022): 1-31.
 Dixit, Vaidehi, and Ryan Martin. "A PRticle filter algorithm for
 nonparametric estimation of multivariate mixing distributions."
 arXiv preprint arXiv:2204.01646 (2022).
+############################################################################################################################
 }

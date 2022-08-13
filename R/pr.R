@@ -1,4 +1,4 @@
-#' Predictive recursion (PR) algorithm
+#'Predictive recursion (PR) algorithm
 #'
 #' Executes the PR algorithm
 #' @param X Vector or matrix of data
@@ -36,7 +36,6 @@
 #'f0 = dunif(U, min = 0, max = 1)
 #'
 #'# Generate data from a univariate mixture density
-# True density = \int N(x | u, sd = 0.1) Beta(u |2, 10)
 #'u = rbeta(n = 1000, 2, 10)
 #'x = rnorm(n = 1000, mean = u, sd = 0.1)
 #'
@@ -50,7 +49,6 @@
 #'m1 = mixture_density(f = ans1$f, U = U, d = dnorm, Xsup = Xsup, sd = 0.1)
 #'plot(m1)
 #'############################################################################################################
-#'
 #'# Bivariate implementation
 #'U = cbind(seq(0, 1, length.out = 101), seq(10^-5, 1, length.out = 101))
 #'f0 = rep(1, 101*101)
@@ -59,7 +57,6 @@
 #'}
 #'
 #'# Generate data from a bivariate mixture density
-# True density = \int N(x | u, sd = 0.1) Beta(u1 |2, 10) Beta(u2 | 4, 4)
 #'u = cbind(rbeta(n = 2000, 2, 10), rbeta(n = 2000, 4, 4))
 #'x = rnorm(n = 2000, mean = u[,1], sd = u[,2])
 #'
@@ -67,7 +64,6 @@
 #'ans2 = pr(X = x, d = d2, U = U, f0 = f0)
 #'plot(ans2)
 #'
-# TRUTH
 #U.l = as.matrix(expand.grid(U[,1],U[,2]))
 #f.truth = dbeta(U.l[, 1], 2, 10) * dbeta(U.l[, 2], 4, 4)
 #ContourFunctions::gcf_grid(U[,2], U[,1], matrix(f.truth, 101, 101, byrow = TRUE))
@@ -76,18 +72,14 @@
 #'m2 = mixture_density(f = ans2$f, U = U, d = d2, Xsup = Xsup)
 #'plot(m2)
 #m.truth = mixture_density(f.truth, U, d = d2, Xsup)
-#lines(Xsup, m1$m, col = "red")
 #'
 #'##########################################################################################
 #'
 #'# Multivariate implementation
 #'require(sn)
-#'d3 = function(x,u,...){
-#'  ans = numeric(length(u[,1]))
-#'  for(i in 1:length(u[,1])){
-#'    ans[i] = dsn(x, xi = u[i,1], omega = u[i,2], alpha = u[i,3])
-#'  }
-#'  return(ans)
+#'d3 = function(x,u){
+#'ans = dsn(x, xi = u[1], omega = u[2], alpha = u[3])
+#'return(ans)
 #'}
 #'
 #'# Generate particles from initial guess f0
@@ -99,6 +91,7 @@
 #'plot(ans3)
 #'
 #'# Mixture density estimate
+#'Xsup = as.matrix(seq(-1.5, 2.8, length.out = 101))
 #'m3 = mixture_density(f = ans3$D, U = U, d = d3, Xsup = Xsup)
 #'plot(m3)
 #'
@@ -112,7 +105,7 @@
 #' nonparametric estimation of multivariate mixing distributions."
 #' arXiv preprint arXiv:2204.01646 (2022).
 
-#############################################################################################################################
+#'############################################################################################################################
 #'@export
 pr <- function(X, d, U, f0, w, nperm = 1, perm = NULL,...) {
   X = as.matrix(X)
@@ -175,32 +168,33 @@ pr <- function(X, d, U, f0, w, nperm = 1, perm = NULL,...) {
     return(ans)
   }
   else {
-    D.avg = 0 * f0
-    for(j in 1:N) {
-      f = f0
-      L = 0
-      x <- as.matrix(X[perm[,j], ])
-      D = 1
-      for(i in 1:n) {
-        num <- d(x[i,], U,...) * f
-        den <- (1/t)*sum(d(x[i,], U,...)*D)
-        L <- L + log(den)
-        f <- (1 - w(i)) * f + w(i) * num / den
-        D = D*(1 + w(i)*(d(x[i,], U,...)/den - 1))
-
-      }
-      # Add D.avg
-      f.avg <- (j - 1) * f.avg / j + f / j
-      L.avg <- (j - 1) * L.avg / j + L / j
-      D.avg <- (j - 1) * D.avg / j + D / j
-    }
-    ans = list(U = U, f=f.avg, L=-L.avg, D = D.avg)
+    # D.avg = 0 * f0
+    # for(j in 1:N) {
+    #   f = f0
+    #   L = 0
+    #   x <- as.matrix(X[perm[,j], ])
+    #   D = 1
+    #   for(i in 1:n) {
+    #     num <- d(x[i,], U,...) * f
+    #     den <- (1/t)*sum(d(x[i,], U,...)*D)
+    #     L <- L + log(den)
+    #     f <- (1 - w(i)) * f + w(i) * num / den
+    #     D = D*(1 + w(i)*(d(x[i,], U,...)/den - 1))
+    #
+    #   }
+    #   # Add D.avg
+    #   f.avg <- (j - 1) * f.avg / j + f / j
+    #   L.avg <- (j - 1) * L.avg / j + L / j
+    #   D.avg <- (j - 1) * D.avg / j + D / j
+    w.vec = w(1:n)
+    cpp.final = pr_cpp(f0, U, X, d, N, w.vec)
+    ans = list(U = U, f=cpp.final$f, L=-cpp.final$L, D = cpp.final$D)
     class(ans) = "pr"
     return(ans)
   }
 }
 
-#'Plots the PR density function
+#'#Plots the PR density function
 #'@export
 plot.pr = function(obj){
   U = as.matrix(obj$U)
@@ -217,26 +211,44 @@ plot.pr = function(obj){
   }
 }
 
-# Adding a C++ function to replace the multivariate sum in pr.R
-# cppFunction('
-#   double pr_cpp(double x, double y) {
-#     vector<double> f.avg = 0 * f0
-#     double L.avg = 0
-#     vector<double> D.avg = 0 * f0
-#     for(j){
-#     vector<double> f = f0;
-#     double L = 0;
-#     double x[][] = X[perm[,j],];
-#     D = 1;
-#     for(i){
-#         vector<double> num = d()*f;
-#         vector<double> den = (1/t)*sum(d()*D);
-#         L = L + log(den);
-#         f = (1 - w(i))*f + w(i)*num / den;
-#         D = D*(1 + w(i)*(d(x[i,], U,...)/den - 1))
-#     }
-#     f.avg = (j-1)*f.avg/j + f/j;
-#     L.avg = (j-1)*L.avg/j + L/j;
-#     D.avg = (j-1)*D.avg/j + D/j;
-#     }
-#   }')
+########## Adding a C++ function to replace the multivariate sum in pr.R
+#'@export
+Rcpp::cppFunction('
+  List pr_cpp(NumericVector f0, NumericMatrix U, NumericMatrix X, Function d, int N, NumericVector w) {
+    int n = X.rows();
+    int du = U.cols();
+    int t = U.rows();
+    NumericVector favg = 0.0 * f0;
+    double Lavg = 0.0;
+    NumericVector Davg = 0.0 * f0;
+    for(int j = 0; j < N; j++){
+      NumericVector f = f0 + 0.0;
+      double L = 0.0;
+      NumericVector D (t, 1.0);
+      NumericMatrix kernel(n,t);
+      for(int i = 0; i < n; i++){
+        NumericVector num (t,0.0);
+        NumericVector num2 (t,0.0);
+        for(int k = 0; k < t; k++){
+          kernel(i , k) = as<double>(d(X( i , _ ), U( k , _ )));
+          num(k) = kernel(i , k)*f(k);
+          num2(k) = kernel(i , k)*D(k);
+          }
+          double den = Rcpp::sum(num2) / t;
+          L = L + log(den);
+          f = (1.0 - w(i))*f + w(i)*num / den;
+          D = D*(1.0 + w(i)*(kernel(i, _) / den - 1.0));
+        }
+      favg = (j)*favg/(j+1) + f/(j+1);
+      Lavg = (j)*Lavg/(j+1) + L/(j+1);
+      Davg = (j)*Davg/(j+1) + D/(j+1);
+    }
+    List final;
+    final("f") = favg;
+    final("L") = Lavg;
+    final("D") = Davg;
+    return final;
+  }')
+
+
+
