@@ -104,7 +104,7 @@
 #'Dixit, Vaidehi, and Ryan Martin. "A PRticle filter algorithm for
 #' nonparametric estimation of multivariate mixing distributions."
 #' arXiv preprint arXiv:2204.01646 (2022).
-
+#'
 #'############################################################################################################################
 #'@export
 pr <- function(X, d, U, f0, w, nperm = 1, perm = NULL,...) {
