@@ -216,7 +216,6 @@ plot.pr = function(obj){
 Rcpp::cppFunction('
   List pr_cpp(NumericVector f0, NumericMatrix U, NumericMatrix X, Function d, int N, NumericVector w) {
     int n = X.rows();
-    int du = U.cols();
     int t = U.rows();
     NumericVector favg = 0.0 * f0;
     double Lavg = 0.0;
