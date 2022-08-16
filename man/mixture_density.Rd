@@ -13,12 +13,17 @@ mixture_density(f, U, d, Xsup, ...)
 \itemize{
 \item Equispaced and odd length vector for univariate f
 \item Matrix of two columns, where each column is the support for the corresponding variate for bivariate f
-\item A matrix where each row is a random sample from f0
+\item A matrix where each row is a random sample from f0 for multivariate f
 }}
 
 \item{d}{Parametric kernel function of form d(x,u)}
 
-\item{Xsup}{Vector or matrix (each row representing one support point) at which mixture density is calculated}
+\item{Xsup}{Mixture density support, where Xsup is a
+\itemize{
+\item Equispaced and odd length vector for a univariate mixture
+\item Matrix of two columns, where each column is the support for the corresponding variate for a bivariate mixture
+\item A matrix where each row is a support point for a multivariate mixture
+}}
 }
 \value{
 Vector containing mixture density estimate values at Xsup

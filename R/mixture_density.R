@@ -8,11 +8,15 @@
 #' \itemize{
 #' \item Equispaced and odd length vector for univariate f
 #' \item Matrix of two columns, where each column is the support for the corresponding variate for bivariate f
-#' \item A matrix where each row is a random sample from f0
+#' \item A matrix where each row is a random sample from f0 for multivariate f
 #' }
 #'@param d Parametric kernel function of form d(x,u)
-#'@param Xsup Vector or matrix (each row representing one support point) at which mixture density is calculated
-#'
+#'@param Xsup Mixture density support, where Xsup is a
+#' \itemize{
+#' \item Equispaced and odd length vector for a univariate mixture
+#' \item Matrix of two columns, where each column is the support for the corresponding variate for a bivariate mixture
+#' \item A matrix where each row is a support point for a multivariate mixture
+#' }
 #'@return Vector containing mixture density estimate values at Xsup
 #'
 #'@seealso [pr()]
@@ -22,6 +26,9 @@
 mixture_density <- function(f, U, d, Xsup,...){
   U = as.matrix(U)
   Xsup = as.matrix(Xsup)
+  if(ncol(Xsup)==2) {
+    Xsup = as.matrix(expand.grid(Xsup[,1],Xsup[,2]))
+  }
   t <- nrow(U)
   du <- ncol(U)
   if(du==1){
@@ -49,7 +56,8 @@ mixture_density <- function(f, U, d, Xsup,...){
 #'@seealso [pr()], [mixture_density()]
 #'@export
 single.mix1 = function(x, f, U, d,...){
-  return(int(d(x, U,...)*f, U))
+  num = sapply(U, d, x = x)*f
+  return(int(num, U))
 }
 
 #' Mixture density at point x for bidimensional U
@@ -65,7 +73,7 @@ single.mix1 = function(x, f, U, d,...){
 #'@export
 single.mix2 = function(x, f, U, d, t,...){
   U.l = as.matrix(expand.grid(U[,1],U[,2]))
-  num = d(x, U.l,...)*f
+  num = apply(U.l, 1, d, x = x)*f
   f_matrix = matrix(num, nrow = t, ncol = t, byrow=TRUE)
   return(simp.int2(U[,1], U[,2], f_matrix))
 }
@@ -83,7 +91,8 @@ single.mix2 = function(x, f, U, d, t,...){
 #'@seealso [pr()], [mixture_density()]
 #'@export
 single.mix.multi = function(x, D, U, d, t,...){
-  return((1/t)*sum(d(x, U,...)*D))
+  ans = apply(U, 1, d, x = x)
+  return((1/t)*sum(ans*D))
 }
 
 #'Plots the PR mixture density function
@@ -95,8 +104,9 @@ if(dx==1){
   plot(Xsup, obj$mix, xlab = "X", ylab = "m", type = "l", main = "Estimated mixture density")
   }
 else if(dx==2) {
-  m.matrix = matrix(obj$mix, nrow(Xsup), nrow(Xsup), byrow = TRUE)
-  ContourFunctions::gcf_grid(Xsup[,2], Xsup[,1], m.matrix, mainminmax = FALSE, color.palette = function(x) rev(gray((1:x)/x)), bar = TRUE)
+  s1 = unique(Xsup[,1]) ; s2=unique(Xsup[,2])
+  m.matrix = matrix(obj$mix, length(s1), length(s2), byrow = TRUE)
+  ContourFunctions::gcf_grid(s2, s1, m.matrix, mainminmax = FALSE, color.palette = function(x) rev(gray((1:x)/x)), bar = TRUE)
 }
 else {
   print("Plot yet to be decided")

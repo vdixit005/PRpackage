@@ -17,7 +17,7 @@ NULL
 #' \itemize{
 #' \item Equispaced and odd length vector as the support for univariate f
 #' \item Matrix of two columns, where each column is the support for the corresponding variate for bivariate f
-#' \item A matrix where each row is a random sample from f0
+#' \item A matrix where each row is a random sample from f0 for multivariate f
 #' }
 #'See 'Details'
 #' @param f0 A vector of initial guess for f
