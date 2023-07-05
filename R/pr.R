@@ -12,7 +12,7 @@ NULL
 #' @description Executes the PR algorithm
 #'
 #' @param X Vector or matrix of data
-#' @param d Parametric kernel function of form d(x,u)
+#' @param d Parametric kernel function of form d(x,U)
 #' @param U Mixing density support, where U is a
 #' \itemize{
 #' \item Equispaced and odd length vector as the support for univariate f

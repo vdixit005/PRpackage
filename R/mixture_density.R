@@ -10,7 +10,7 @@
 #' \item Matrix of two columns, where each column is the support for the corresponding variate for bivariate f
 #' \item A matrix where each row is a random sample from f0 for multivariate f
 #' }
-#'@param d Parametric kernel function of form d(x,u)
+#'@param d Parametric kernel function of form d(x,U)
 #'@param Xsup Mixture density support, where Xsup is a
 #' \itemize{
 #' \item Equispaced and odd length vector for a univariate mixture
@@ -73,7 +73,7 @@ single.mix1 = function(x, f, U, d,...){
 #'@export
 single.mix2 = function(x, f, U, d, t,...){
   U.l = as.matrix(expand.grid(U[,1],U[,2]))
-  num = apply(U.l, 1, d, x = x)*f
+  num = d(x=x, u=U.l)*f
   f_matrix = matrix(num, nrow = t, ncol = t, byrow=TRUE)
   return(simp.int2(U[,1], U[,2], f_matrix))
 }
