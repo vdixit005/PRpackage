@@ -16,7 +16,7 @@ mixture_density(f, U, d, Xsup, ...)
 \item A matrix where each row is a random sample from f0 for multivariate f
 }}
 
-\item{d}{Parametric kernel function of form d(x,u)}
+\item{d}{Parametric kernel function of form d(x,U)}
 
 \item{Xsup}{Mixture density support, where Xsup is a
 \itemize{

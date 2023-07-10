@@ -12,4 +12,4 @@ Imports: ggplot2, ContourFunctions, inline, Rcpp
 License: `use_mit_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3

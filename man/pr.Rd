@@ -12,7 +12,7 @@ pr(X, d, U, f0, w, nperm = 1, perm = NULL, ...)
 \arguments{
 \item{X}{Vector or matrix of data}
 
-\item{d}{Parametric kernel function of form d(x,u)}
+\item{d}{Parametric kernel function of form d(x,U)}
 
 \item{U}{Mixing density support, where U is a
 \itemize{

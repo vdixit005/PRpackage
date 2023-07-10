@@ -73,7 +73,7 @@ single.mix1 = function(x, f, U, d,...){
 #'@export
 single.mix2 = function(x, f, U, d, t,...){
   U.l = as.matrix(expand.grid(U[,1],U[,2]))
-  num = d(x=x, u=U.l)*f
+  num = d(x=x, u=U.l,...)*f
   f_matrix = matrix(num, nrow = t, ncol = t, byrow=TRUE)
   return(simp.int2(U[,1], U[,2], f_matrix))
 }
